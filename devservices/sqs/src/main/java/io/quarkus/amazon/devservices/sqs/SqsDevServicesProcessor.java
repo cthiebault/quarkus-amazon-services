@@ -40,8 +40,8 @@ public class SqsDevServicesProcessor extends AbstractDevServicesLocalStackProces
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials
                         .create(localstack.getAccessKey(), localstack.getSecretKey())))
                 .build()) {
-            for (var queueName : configuration.queues) {
-                client.createQueue(b -> b.queueName(queueName));
+            for (var queueCfg : configuration.queues) {
+                client.createQueue(queueCfg.createQueueRequest());
             }
         }
     }
@@ -51,7 +51,7 @@ public class SqsDevServicesProcessor extends AbstractDevServicesLocalStackProces
     }
 
     private static final class SqsDevServiceCfg extends LocalStackDevServicesBaseConfig {
-        private final Set<String> queues;
+        private final Set<SqsDevServicesBuildTimeConfig.QueueConfig> queues;
 
         public SqsDevServiceCfg(SqsDevServicesBuildTimeConfig config) {
             super(config.shared, config.serviceName, config.containerProperties);
